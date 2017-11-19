@@ -31,7 +31,7 @@ public class DividerItemDecoration extends RecyclerView.ItemDecoration {
 
     private Drawable mDivider;
 
-    private int mOrientation;
+    private int mOrientation;// list orientation
 
     public DividerItemDecoration(Context context, int orientation) {
         final TypedArray a = context.obtainStyledAttributes(ATTRS);
@@ -51,9 +51,9 @@ public class DividerItemDecoration extends RecyclerView.ItemDecoration {
     public void onDraw(Canvas c, RecyclerView parent, RecyclerView.State state) {
         Log.v("recyclerview - itemdecoration", "onDraw()");
         if (mOrientation == VERTICAL_LIST) {
-            drawVertical(c, parent, state);
-        } else {
             drawHorizontal(c, parent, state);
+        } else {
+            drawVertical(c, parent, state);
         }
     }
 
@@ -87,6 +87,7 @@ public class DividerItemDecoration extends RecyclerView.ItemDecoration {
     public void getItemOffsets(Rect outRect, int itemPosition, RecyclerView parent) {
 
         if (mOrientation == VERTICAL_LIST) {
+            // draw vertical line
             outRect.set(0, 0, 0, mDivider.getIntrinsicHeight());
         } else {
             outRect.set(0, 0, mDivider.getIntrinsicWidth(), 0);
