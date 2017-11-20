@@ -2,7 +2,8 @@ package com.example.administrator.recyclerViewDemo.adapter;
 
 import android.content.Context;
 
-import com.example.administrator.myapplication.R;
+import com.example.administrator.recyclerViewDemo.R;
+
 
 /**
  * Created by jngoogle on 2017/11/14.
