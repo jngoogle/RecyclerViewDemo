@@ -10,6 +10,7 @@ import android.view.View;
 import com.example.administrator.recyclerViewDemo.adapter.HeaderFooterAdapterWrapper;
 import com.example.administrator.recyclerViewDemo.adapter.MyAdapter;
 import com.example.administrator.recyclerViewDemo.util.ContactItemDecoration;
+import com.example.administrator.recyclerViewDemo.util.DividerItemDecoration;
 
 import java.util.ArrayList;
 
@@ -48,18 +49,20 @@ public class MainActivity extends AppCompatActivity {
         dataList.add("香梨");
         dataList.add("稀疏");
 
-        myAdapter = new MyAdapter(this, R.layout.layout_list_item);
-        myAdapter.setDataList(dataList);
-
+//        myAdapter = new MyAdapter(this, R.layout.layout_list_item);
+//        myAdapter.setDataList(dataList);
+        adapterWrapper = new HeaderFooterAdapterWrapper(this, R.layout.layout_list_item);
+        adapterWrapper.setDataList(dataList);
+        View headerView = LayoutInflater.from(this).inflate(R.layout.layout_list_item_header, listRv, false);
+        View footerView = LayoutInflater.from(this).inflate(R.layout.layout_list_item_footer, listRv, false);
+        adapterWrapper.addHeaderView(headerView);
+        adapterWrapper.addFooterView(footerView);
 
         listRv = findViewById(R.id.rv_list);
         listRv.setLayoutManager(new LinearLayoutManager(this));
-        adapterWrapper = new HeaderFooterAdapterWrapper(this, R.layout.layout_list_item_header);
-        View headerView = LayoutInflater.from(this).inflate(R.layout.layout_list_item_header, listRv, false);
-        adapterWrapper.addHeaderView(headerView);
         listRv.setAdapter(adapterWrapper);
-        listRv.setAdapter(myAdapter);
-//        listRv.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL_LIST));
+//        listRv.setAdapter(myAdapter);
+        listRv.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL_LIST));
         listRv.addItemDecoration(new ContactItemDecoration(this, dataList));
     }
 }

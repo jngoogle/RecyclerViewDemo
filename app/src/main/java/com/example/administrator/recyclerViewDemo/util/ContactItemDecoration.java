@@ -52,6 +52,7 @@ public class ContactItemDecoration extends RecyclerView.ItemDecoration {
             if (position > parent.getChildCount()) {
                 return;
             }
+
             char letter = PinyinUtil.getPinyin(data.get(position).charAt(0) + "");
 
             if (position == 0) {

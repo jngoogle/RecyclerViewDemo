@@ -57,6 +57,7 @@ public class DividerItemDecoration extends RecyclerView.ItemDecoration {
         }
     }
 
+    // draw vertical divider line
     public void drawVertical(Canvas c, RecyclerView parent, RecyclerView.State state) {
         for (int i = 0; i < parent.getChildCount(); i++) {
             View child = parent.getChildAt(i);
@@ -70,6 +71,7 @@ public class DividerItemDecoration extends RecyclerView.ItemDecoration {
         }
     }
 
+    // draw horizontal divider line
     public void drawHorizontal(Canvas c, RecyclerView parent, RecyclerView.State state) {
         for (int i = 0; i < parent.getChildCount(); i++) {
             View child = parent.getChildAt(i);
