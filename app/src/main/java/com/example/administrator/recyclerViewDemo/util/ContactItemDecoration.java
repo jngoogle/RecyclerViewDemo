@@ -49,6 +49,9 @@ public class ContactItemDecoration extends RecyclerView.ItemDecoration {
             float bottom = child.getBottom() + params.bottomMargin;
             float width = right - left;
             float height = bottom - (bottom - top) / 2;
+            if (position > parent.getChildCount()) {
+                return;
+            }
             char letter = PinyinUtil.getPinyin(data.get(position).charAt(0) + "");
 
             if (position == 0) {
