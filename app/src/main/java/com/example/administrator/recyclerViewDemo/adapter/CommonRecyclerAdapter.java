@@ -80,7 +80,7 @@ public abstract class CommonRecyclerAdapter<Data> extends RecyclerView.Adapter<R
         if (dataList == null) {
             return;
         } else {
-            bindData((MyViewHolder) holder, position, dataList.get(position - 1));
+            bindData((MyViewHolder) holder, position, dataList.get(position));
         }
     }
 

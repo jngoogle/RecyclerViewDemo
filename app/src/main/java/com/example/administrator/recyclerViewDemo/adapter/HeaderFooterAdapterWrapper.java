@@ -1,93 +1,91 @@
 package com.example.administrator.recyclerViewDemo.adapter;
 
 import android.content.Context;
+import android.support.v4.util.SparseArrayCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
 
 /**
  * Created by jngoogle on 2017/11/21.
+ * mInnerAdapter 原本已经写好的adapter且数据绑定在此adapter上
  */
 
 public class HeaderFooterAdapterWrapper extends MyAdapter {
-    private static final int HEADER_ITEM_TYPE = 10000;
-    private static final int FOOTER_ITEM_TYPE = 20000;
-    private static final int NORMAL_ITEM_TYPE = 30000;
+    private static final int BASE_ITEM_TYPE_HEADER = 100000;
+    private static final int BASE_ITEM_TYPE_FOOTER = 200000;
 
-    private View headerView;
-    private View footerView;
+    private SparseArrayCompat<View> mHeaderViews = new SparseArrayCompat<>();
+    private SparseArrayCompat<View> mFootViews = new SparseArrayCompat<>();
 
-    /**
-     *
-     * @param context
-     * @param resId  列表 item 的布局，注意不是 header 或 footer 的布局
-     */
-    public HeaderFooterAdapterWrapper(Context context, int resId) {
+    private RecyclerView.Adapter mInnerAdapter;
+
+    public HeaderFooterAdapterWrapper(Context context, int resId, RecyclerView.Adapter adapter) {
         super(context, resId);
+        mInnerAdapter = adapter;
     }
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        if (headerView != null && viewType == HEADER_ITEM_TYPE) {
-            return new MyViewHolder(parent.getContext(), headerView);
+        if (mHeaderViews.get(viewType) != null) {
+            return new MyViewHolder(parent.getContext(), mHeaderViews.get(viewType));
+        } else if (mFootViews.get(viewType) != null) {
+            return new MyViewHolder(parent.getContext(), mFootViews.get(viewType));
         }
-        if (footerView != null && viewType == FOOTER_ITEM_TYPE) {
-            return new MyViewHolder(parent.getContext(), footerView);
+        return mInnerAdapter.onCreateViewHolder(parent, viewType);
+    }
+
+    public int getItemViewType(int position) {
+        if (isHeaderViewPos(position)) {
+            return mHeaderViews.keyAt(position);
+        } else if (isFooterViewPos(position)) {
+            return mFootViews.keyAt(position - getHeadersCount() - getRealItemCount());
         }
-        return super.onCreateViewHolder(parent, viewType);
+        return mInnerAdapter.getItemViewType(position - getHeadersCount());
     }
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-        if (HEADER_ITEM_TYPE == getItemViewType(position)) {
+        if (isHeaderViewPos(position)) {
             return;
         }
-        if (FOOTER_ITEM_TYPE == getItemViewType(position)) {
+        if (isFooterViewPos(position)) {
             return;
         }
-        super.onBindViewHolder(holder, position);
+        mInnerAdapter.onBindViewHolder(holder, position - getHeadersCount());
     }
 
     @Override
     public int getItemCount() {
-        boolean hasHeaderView = headerView == null ? false : true;
-        boolean hasFooterView = footerView == null ? false : true;
-
-        if (!hasHeaderView || !hasFooterView) {
-            if (!hasHeaderView && !hasFooterView) {
-                return super.getItemCount();
-            } else {
-                return super.getItemCount() + 1;
-            }
-        }
-
-        return super.getItemCount() + 2;// 有header和footer
+        return getHeadersCount() + getFootersCount() + getRealItemCount();
     }
 
-    @Override
-    public int getItemViewType(int position) {
-        if (headerView == null) {
-            return NORMAL_ITEM_TYPE;
-        }
-        if (footerView == null) {
-            return NORMAL_ITEM_TYPE;
-        }
-        if (position == 0) {
-            return HEADER_ITEM_TYPE;
-        }
-        if (position == super.getItemCount() + 1) {
-            return FOOTER_ITEM_TYPE;
-        }
-        return NORMAL_ITEM_TYPE;
+    private boolean isHeaderViewPos(int position) {
+        return position < getHeadersCount();
     }
 
-    public void addHeaderView(View headerView) {
-        this.headerView = headerView;
-        notifyItemInserted(0);
+    private boolean isFooterViewPos(int position) {
+        return position >= getHeadersCount() + getRealItemCount();
     }
 
-    public void addFooterView(View footerView) {
-        this.footerView = footerView;
-        notifyItemInserted(super.getItemCount() - 1);
+
+    public void addHeaderView(View view) {
+        mHeaderViews.put(mHeaderViews.size() + BASE_ITEM_TYPE_HEADER, view);
+    }
+
+    public void addFootView(View view) {
+        mFootViews.put(mFootViews.size() + BASE_ITEM_TYPE_FOOTER, view);
+    }
+
+    public int getHeadersCount() {
+        return mHeaderViews.size();
+    }
+
+    public int getFootersCount() {
+        return mFootViews.size();
+    }
+
+    private int getRealItemCount() {
+        return mInnerAdapter.getItemCount();
     }
 }
